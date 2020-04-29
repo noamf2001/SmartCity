@@ -1,18 +1,24 @@
+import numpy as np
+
+
 class Point:
     def __init__(self, id, x, y):
         self.id = id
         self.x = x
         self.y = y
 
-    def get_angle(self, prev_point, prev_prev_point):
+    def get_angle(self):
+        return np.angle(self.x + self.y * 1j, deg=True)
 
-        pass
+    @staticmethod
+    def sub_points(point1, point2):
+        return Point(0, point2.x - point1.x, point2.y - point1.y)
 
 
 class Section:
     def __init__(self, start_point: Point, end_point: Point, ground_type: str, slope: int, is_steps: bool,
                  r_side_description: str, l_side_description: str, length: int, width: int,
-                 turn_angle: int = 0, steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", comments: str = ""):
+                 steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", comments: str = ""):
         """
         :param rail: out of (N - no rail, "left","right")
         :param stairs_slope: out of ("N" - no stairs,"up","down")
@@ -27,18 +33,27 @@ class Section:
         self.l_side_description = l_side_description  # 6
         self.length = length  # 7
         self.width = width  # 8
-        self.turn_angle = turn_angle  # 9
-        self.steps_num = steps_num  # 10
-        self.rail = rail  # 11
-        self.stairs_slope = stairs_slope  # 12
-        self.comments = comments  # 13
+        self.steps_num = steps_num  # 9
+        self.rail = rail  # 10
+        self.stairs_slope = stairs_slope  # 11
+        self.comments = comments  # 12
 
-    def create_turn_description(self) -> str:
-        if self.turn_angle > 0:
-            direction = "right"
-        else:
+        self.angle = Point.sub_points(end_point, start_point).get_angle()
+
+    def create_turn_description(self, prev_angle) -> str:
+        turn_angle = self.angle - prev_angle
+        if turn_angle > 180:
+            turn_angle = 360 - turn_angle
             direction = "left"
-        return "turn " + str(self.turn_angle) + " degrees " + direction
+        elif 0 < turn_angle <= 180:
+            direction = "right"
+        elif -180 < turn_angle < 0:
+            turn_angle *= -1
+            direction = "left"
+        else:  # turn_angle < -180
+            turn_angle += 360
+            direction = "right"
+        return "turn " + str(turn_angle) + " degrees " + direction
 
     def create_ground_type_description(self) -> str:
         return "the ground type is " + str(self.ground_type)
@@ -69,8 +84,8 @@ class Section:
 
     def create_description(self, prev_section=None):
         result = ""
-        if self.turn_angle != 0:
-            result += self.create_turn_description() + "\n"
+        if prev_section is not None and self.angle != prev_section.angle:
+            result += self.create_turn_description(prev_section.current_incline) + "\n"
 
         if prev_section is not None and prev_section.ground_type != self.ground_type:
             result += self.create_ground_type_description() + "\n"
