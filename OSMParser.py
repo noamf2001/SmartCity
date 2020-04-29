@@ -1,5 +1,5 @@
 from osmread import parse_file, Node, Way
-from Parser import Point
+from Section import Point
 
 
 def osmToEntities(path: str):
