@@ -1,4 +1,8 @@
 import numpy as np
+import math
+
+# radius of the Earth
+R = 6373.0
 
 
 class Point:
@@ -14,18 +18,28 @@ class Point:
     def sub_points(point1, point2):
         return Point(0, point2.x - point1.x, point2.y - point1.y)
 
-
     @staticmethod
-    def calc_distance(point1,point2):
-        # TODO
-        return 1
+    def calc_distance(point1, point2):
+        lat1 = math.radians(point1.x)
+        lon1 = math.radians(point1.y)
+        lat2 = math.radians(point2.x)
+        lon2 = math.radians(point2.y)
+
+        dlon = lon2 - lon1
+
+        dlat = lat2 - lat1
+        a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        distance = R * c
+        return distance
 
     @staticmethod
     def create_points_list(points_list):
         new_points_list = []
         for point in points_list:
-            new_points_list.append(Point(point[2],point[0],point[1]))
+            new_points_list.append(Point(point[2], point[0], point[1]))
         return new_points_list
+
 
 class Section:
     def __init__(self, start_point: Point, end_point: Point, ground_type: str, slope: int, is_steps: bool,
