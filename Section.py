@@ -15,6 +15,11 @@ class Point:
         return Point(0, point2.x - point1.x, point2.y - point1.y)
 
 
+    @staticmethod
+    def calc_distance(point1,point2):
+        # TODO
+        return 1
+
 class Section:
     def __init__(self, start_point: Point, end_point: Point, ground_type: str, slope: int, is_steps: bool,
                  r_side_description: str, l_side_description: str, length: int, width: int,
