@@ -1,6 +1,5 @@
-from datetime import datetime, time
-from openpyxl import load_workbook, Workbook
 from osmread import parse_file, Node, Way
+from Parser import Point
 
 
 def osmToEntities(path: str):
@@ -29,79 +28,47 @@ def createWays(entities):
     return ways
 
 
-def createOutputFile(nodes, ways):
-    now = datetime.now()
-    timestamp = datetime.timestamp(now)
-    name = ".\\{0}-data.xlsx".format(timestamp)
-    book = Workbook()
-    sheet = book.active
+def createOutputList(nodes, ways):
+    output = []
 
-    sheet['A1'] = "ID"; sheet['B1'] = "X-Lon"; sheet['C1'] = "Y-Lat"; sheet['I1'] = "Highway-Node"
-    sheet['E1'] = "Handrail"; sheet['F1'] = "Step-Count"; sheet['G1'] = "Amenity"; sheet['H1'] = "Barrier"
-    sheet['D1'] = "Highway-Way"; sheet['J1'] = "Name:en"
-    sheet['K1'] = "OP"; sheet['L1'] = "OP"
+    for i, item in enumerate(nodes):
+        node_tags = [None] * 14
+        start_point = Point(item.id, item.lon, item.lat)
+        node_tags[0] = start_point
 
-    for i in range(len(nodes)):
-        # write node id
-        cell = "A{0}".format(i + 2)
-        node = nodes[i]
-        sheet[cell] = node.id
+        if "highway" in item.tags:
+            node_tags[9] = item.tags["highway"]
 
-        # write node lon
-        cell = "B{0}".format(i + 2)
-        sheet[cell] = node.lon
-
-        # write node lat
-        cell = "C{0}".format(i + 2)
-        sheet[cell] = node.lat
-
-        # write node highway-type
-        if "highway" in node.tags:
-            cell = "I{0}".format(i + 2)
-            sheet[cell] = node.tags["highway"]
-
-        # write node amenity
-        if "amenity" in node.tags:
-            cell = "G{0}".format(i + 2)
-            sheet[cell] = node.tags["amenity"]
+        if "amenity" in item.tags:
+            node_tags[7] = item.tags["amenity"]
 
         for way in ways:
-            if node.id in way.nodes:
+            if item.id in way.nodes:
 
                 # write way highway-type
                 if "highway" in way.tags:
-                    cell = "D{0}".format(i + 2)
-                    sheet[cell] = way.tags["highway"]
+                    node_tags[2] = way.tags["highway"]
+                    if way.tags["highway"] == "steps":
+                        node_tags[4] = "Yes"
 
                 # write way handrail
                 if "handrail" in way.tags:
-                    cell = "E{0}".format(i + 2)
-                    sheet[cell] = way.tags["handrail"]
+                    node_tags[5] = way.tags["handrail"]
 
                 # write way step-count
                 if "step_count" in way.tags:
-                    cell = "F{0}".format(i + 2)
-                    sheet[cell] = way.tags["step_count"]
+                    node_tags[10] = way.tags["step_count"]
 
                 # write way barrier
                 if "barrier" in way.tags:
-                    cell = "H{0}".format(i + 2)
-                    sheet[cell] = way.tags["barrier"]
-
+                    node_tags[3] = way.tags["barrier"]
 
                 # write way name
                 if "name:en" in way.tags:
-                    cell = "J{0}".format(i + 2)
-                    sheet[cell] = way.tags["name:en"]
+                    node_tags[5] = way.tags["name:en"]
 
-    sheet.column_dimensions["A"].width = 11
-    sheet.column_dimensions["B"].width = 11
-    sheet.column_dimensions["C"].width = 11
-    sheet.column_dimensions["D"].width = 13
-    sheet.column_dimensions["G"].width = 14
-
-    book.save(name)
-    return name, sheet, book
+        output.append(node_tags)
+    return output
 
 
 def writeNodesToFile(nodes, name, sheet, book):
@@ -114,13 +81,13 @@ def writeNodesToFile(nodes, name, sheet, book):
 
 def main():
     """
-    documentation!!
+    documentation
     """
-    path = "C:\\Users\\shira\\Downloads\\map (1).osm"
+    path = "C:\\Users\\shira\\Downloads\\map (4).osm"
     entities = osmToEntities(path)
     nodes = createNodes(entities)
     ways = createWays(entities)
-    name, sheet, book = createOutputFile(nodes, ways)
+    nodes_info = createOutputList(nodes, ways)
 
 
 if __name__ == '__main__':
