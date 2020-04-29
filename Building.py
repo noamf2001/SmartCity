@@ -1,4 +1,8 @@
 from Section import Section
+from OSMParser import create_nodes_info
+from Section import Point
+
+PATH = "map.osm"
 
 
 def fetch_point_info(point, nodes_info):
@@ -36,7 +40,8 @@ def calc_distance(point1, point2):
 
 
 def create_section_from_info(info):
-    section = Section(info[0], get_end_point(), info[2], get_slope(), info[4], get_right_desc(info[0]), get_left_desc(info[0]),\
+    section = Section(info[0], get_end_point(), info[2], get_slope(), info[4], get_right_desc(info[0]),
+                      get_left_desc(info[0]), \
                       0, 0)
     return section
 
@@ -71,13 +76,19 @@ def split_to_sections(points_list, nodes_info) -> list:
         start_sec.end_point = end_sec.start_point
         start_sec.length = calc_distance(start_sec.start_point, start_sec.end_point)
         start_sec = end_sec
-        
+
     return sections
 
 
 def create_description(points_list) -> str:
+    """
+    :param points_list: [[x,y,id] for every turn]
+    :return:
+    """
     result = ""
-    section_list = split_to_sections(points_list)
+    points_list = Point.create_points_list(points_list)
+    nodes_info = create_nodes_info(PATH)
+    section_list = split_to_sections(points_list, nodes_info)
     result += section_list[0].get_section_description(None)
     for section_index in range(1, len(section_list) - 1):
         result += section_list[section_index].get_section_description(section_list[section_index - 1])

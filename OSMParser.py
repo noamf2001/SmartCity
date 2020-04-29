@@ -79,16 +79,10 @@ def writeNodesToFile(nodes, name, sheet, book):
         sheet[cell] = str(node.id)
     book.save(name)
 
-def main():
-    """
-    documentation
-    """
-    path = "map.osm"
+
+def create_nodes_info(path:str):
     entities = osmToEntities(path)
     nodes = createNodes(entities)
     ways = createWays(entities)
     nodes_info = createOutputList(nodes, ways)
-
-
-if __name__ == '__main__':
-    main()
+    return nodes_info

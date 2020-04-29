@@ -20,6 +20,13 @@ class Point:
         # TODO
         return 1
 
+    @staticmethod
+    def create_points_list(points_list):
+        new_points_list = []
+        for point in points_list:
+            new_points_list.append(Point(point[2],point[0],point[1]))
+        return new_points_list
+
 class Section:
     def __init__(self, start_point: Point, end_point: Point, ground_type: str, slope: int, is_steps: bool,
                  r_side_description: str, l_side_description: str, length: int, width: int,
