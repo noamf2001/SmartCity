@@ -12,13 +12,12 @@ def diff(section1, section2):
     pass
 
 
-def split_to_sections(points_list, nodes_info) -> list:
+def split_to_sections(points_list) -> list:
     """
 
-    :param start_point:
-    :param end_point:
+    :param points_list: list of points of type Point (from Section)
 
-    :return list of sections, so that every section is one kind of description
+    :return list of sections, such that each geographical parameter is valid to all of it
     """
     sections = []
 

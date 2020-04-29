@@ -83,7 +83,7 @@ def main():
     """
     documentation
     """
-    path = "C:\\Users\\shira\\Downloads\\map (4).osm"
+    path = "map.osm"
     entities = osmToEntities(path)
     nodes = createNodes(entities)
     ways = createWays(entities)

@@ -1,12 +1,11 @@
-
-
 class Point:
     def __init__(self, id, x, y):
         self.id = id
         self.x = x
         self.y = y
 
-    def get_angle(self, other_point):
+    def get_angle(self, prev_point, prev_prev_point):
+
         pass
 
 
@@ -19,20 +18,20 @@ class Section:
         :param stairs_slope: out of ("N" - no stairs,"up","down")
         :param comments: no stairs comments
         """
-        self.start_point = start_point #0
-        self.end_point = end_point #1
-        self.ground_type = ground_type #2
-        self.slope = slope #3
-        self.is_steps = is_steps #4
-        self.r_side_description = r_side_description #5
-        self.l_side_description = l_side_description #6
-        self.length = length #7
-        self.width = width #8
-        self.turn_angle = turn_angle #9
-        self.steps_num = steps_num #10
-        self.rail = rail #11
-        self.stairs_slope = stairs_slope #12
-        self.comments = comments #13
+        self.start_point = start_point  # 0
+        self.end_point = end_point  # 1
+        self.ground_type = ground_type  # 2
+        self.slope = slope  # 3
+        self.is_steps = is_steps  # 4
+        self.r_side_description = r_side_description  # 5
+        self.l_side_description = l_side_description  # 6
+        self.length = length  # 7
+        self.width = width  # 8
+        self.turn_angle = turn_angle  # 9
+        self.steps_num = steps_num  # 10
+        self.rail = rail  # 11
+        self.stairs_slope = stairs_slope  # 12
+        self.comments = comments  # 13
 
     def create_turn_description(self) -> str:
         if self.turn_angle > 0:
@@ -90,5 +89,3 @@ class Section:
         if self.comments != "" and prev_section is not None and prev_section.comments != self.comments:
             result += self.create_comments_description() + "\n"
         return result
-
-
