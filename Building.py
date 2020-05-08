@@ -1,3 +1,4 @@
+from ExampleInput import main_gate_to_stairs
 from Section import Section
 from OSMParser import create_nodes_info
 from Section import Point
@@ -7,7 +8,7 @@ PATH = "map.osm"
 
 def fetch_point_info(point, nodes_info):
     for item in nodes_info:
-        if item[0].id == point.id:
+        if item["start_point"].id == point.id:
             return item
 
 
@@ -28,11 +29,11 @@ def get_left_desc(point):
 
 
 def get_end_point():
-    pass
+    return Point(0, 0, 0)
 
 
 def get_slope():
-    pass
+    return 0
 
 
 def calc_distance(point1, point2):
@@ -40,9 +41,10 @@ def calc_distance(point1, point2):
 
 
 def create_section_from_info(info):
-    section = Section(info[0], get_end_point(), info[2], get_slope(), info[4], get_right_desc(info[0]),
-                      get_left_desc(info[0]), \
-                      0, 0)
+    section = Section(Point(0, 0, 0), Point(0, 0, 0), "", 0, False, "", "", 0, 0, "", "")
+    if (info):
+        section = Section(info["start_point"], get_end_point(), info["ground_type"], get_slope(), False, "get_right_desc(info)",
+                     "get_left_desc(info)", 0, 0, "0", "block")
     return section
 
 
@@ -65,7 +67,7 @@ def split_to_sections(points_list, nodes_info) -> list:
     sections.append(sec)
 
     for point in points_list[1:]:
-        next_sec = create_section_from_info(fetch_point_info(point))
+        next_sec = create_section_from_info(fetch_point_info(point, nodes_info))
         if diff(sec, next_sec):
             sections.append(next_sec)
         sec = next_sec
@@ -93,3 +95,5 @@ def create_description(points_list) -> str:
     for section_index in range(1, len(section_list) - 1):
         result += section_list[section_index].get_section_description(section_list[section_index - 1])
     return result
+
+print(create_description(main_gate_to_stairs))
