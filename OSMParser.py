@@ -32,40 +32,40 @@ def createOutputList(nodes, ways):
     output = []
 
     for i, item in enumerate(nodes):
-        node_tags = [None] * 14
+        node_tags = {}
         start_point = Point(item.id, item.lon, item.lat)
-        node_tags[0] = start_point
+        node_tags["start_point"] = start_point
 
         if "highway" in item.tags:
-            node_tags[9] = item.tags["highway"]
+            node_tags["comments"] = item.tags["highway"]
 
         if "amenity" in item.tags:
-            node_tags[7] = item.tags["amenity"]
+            node_tags["r_side_description"] = item.tags["amenity"]
 
         for way in ways:
             if item.id in way.nodes:
 
                 # write way highway-type
                 if "highway" in way.tags:
-                    node_tags[2] = way.tags["highway"]
+                    node_tags["ground_type"] = way.tags["highway"]
                     if way.tags["highway"] == "steps":
-                        node_tags[4] = "Yes"
+                        node_tags["is_steps"] = "Yes"
 
                 # write way handrail
                 if "handrail" in way.tags:
-                    node_tags[5] = way.tags["handrail"]
+                    node_tags["rail"] = way.tags["handrail"]
 
                 # write way step-count
                 if "step_count" in way.tags:
-                    node_tags[10] = way.tags["step_count"]
+                    node_tags["steps_num"] = way.tags["step_count"]
 
                 # write way barrier
                 if "barrier" in way.tags:
-                    node_tags[3] = way.tags["barrier"]
+                    node_tags["barrier"] = way.tags["barrier"]
 
                 # write way name
                 if "name:en" in way.tags:
-                    node_tags[5] = way.tags["name:en"]
+                    node_tags["l_side_description"] = way.tags["name:en"]
 
         output.append(node_tags)
     return output
