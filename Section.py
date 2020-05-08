@@ -58,11 +58,10 @@ class Section:
         self.r_side_description = r_side_description  # 5
         self.l_side_description = l_side_description  # 6
         self.length = length  # 7
-        self.width = width  # 8
-        self.steps_num = steps_num  # 9
-        self.rail = rail  # 10
-        self.stairs_slope = stairs_slope  # 11
-        self.comments = comments  # 12
+        self.steps_num = steps_num  # 8
+        self.rail = rail  # 9
+        self.stairs_slope = stairs_slope  # 10
+        self.comments = comments  # 11
 
         self.angle = Point.sub_points(end_point, start_point).get_angle()
 
@@ -102,9 +101,6 @@ class Section:
     def create_length_description(self) -> str:
         return "the length of the road is" + str(self.length)
 
-    def create_width_description(self) -> str:
-        return "the width of the road is" + str(self.width)
-
     def create_comments_description(self) -> str:
         return "here is some information about your road" + self.comments
 
@@ -125,8 +121,6 @@ class Section:
             result += self.create_l_side_description() + "\n"
         if prev_section is not None and prev_section.length != self.length:
             result += self.create_length_description() + "\n"
-        if prev_section is not None and prev_section.width != self.width:
-            result += self.create_width_description() + "\n"
         if self.comments != "" and prev_section is not None and prev_section.comments != self.comments:
             result += self.create_comments_description() + "\n"
         return result
