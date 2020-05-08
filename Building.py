@@ -49,8 +49,17 @@ def create_section_from_info(info):
 def diff(section1, section2):
     return (section1.ground_type != section2.ground_type) or (section1.is_steps != section2.is_steps)
 
+def allNodes(points_list):
+    allPoints = []
+    l = len(points_list)
+    for i in range (0, l-1):
+        allPoints.extend(get_points_between_two_points(points_list[i], points_list[i+1]))
+        del allPoints[-1]
+        
+    return allPoints                        
+    
 
-def split_to_sections(points_list, nodes_info) -> list:
+def split_to_sections(allNodes(points_list), nodes_info) -> list:
     """
 
     :param points_list: list of points of type Point (from Section)
