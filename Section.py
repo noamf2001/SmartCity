@@ -14,7 +14,8 @@ class Point:
     def get_angle(self, other_point):
         dlon = self.lon - other_point.lon
         y = math.sin(dlon) * math.cos(other_point.lat)
-        x = math.cos(self.lat) * math.sin(other_point.lat) - math.sin(self.lat) * math.cos(other_point.lat) * math.cos(dlon)
+        x = math.cos(self.lat) * math.sin(other_point.lat) - math.sin(self.lat) * math.cos(other_point.lat) * math.cos(
+            dlon)
         brng = math.atan2(y, x)
         brng = math.degrees(brng)
         brng = (brng + 360) % 360
@@ -26,7 +27,6 @@ class Point:
 
     @staticmethod
     def calc_distance(point1, point2):
-
         lat1 = math.radians(point1.lat)
         lon1 = math.radians(point1.lon)
         lat2 = math.radians(point2.lat)
@@ -49,8 +49,9 @@ class Point:
 
 
 class Section:
-    def __init__(self, start_point: Point, end_point: Point, ground_type: str, slope: int, is_steps: bool,
-                 r_side_description: str, l_side_description: str, length: int,
+    def __init__(self, start_point: Point, end_point: Point, is_steps: bool, length: int, ground_type: str = "",
+                 slope: int = 0,
+                 r_side_description: str = "", l_side_description: str = "",
                  steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", block: str = "", comments: str = ""):
         """
         :param rail: out of (N - no rail, "left","right")
@@ -60,12 +61,12 @@ class Section:
 
         self.start_point = start_point  # 0
         self.end_point = end_point  # 1
-        self.ground_type = ground_type  # 2
-        self.slope = slope  # 3
-        self.is_steps = is_steps  # 4
-        self.r_side_description = r_side_description  # 5
-        self.l_side_description = l_side_description  # 6
-        self.length = length  # 7
+        self.is_steps = is_steps  # 2
+        self.length = length  # 3
+        self.ground_type = ground_type  # 4
+        self.slope = slope  # 5
+        self.r_side_description = r_side_description  # 6
+        self.l_side_description = l_side_description  # 7
         self.steps_num = steps_num  # 8
         self.rail = rail  # 9
         self.stairs_slope = stairs_slope  # 10
@@ -73,7 +74,6 @@ class Section:
         self.comments = comments  # 12
 
         self.angle = start_point.get_angle(end_point)
-
 
     def create_turn_description(self, prev_angle) -> str:
 
@@ -122,15 +122,17 @@ class Section:
         result = ""
         if prev_section is not None and self.angle != prev_section.angle:
             result += self.create_turn_description(prev_section.angle) + "\n"
-        if prev_section is None or prev_section.ground_type != self.ground_type:
+        if self.ground_type != "" and (prev_section is None or prev_section.ground_type != self.ground_type):
             result += self.create_ground_type_description() + "\n"
         if self.slope != 0 and (prev_section is None or prev_section.slope != self.slope):
             result += self.create_slope_description() + "\n"
         if self.is_steps:
             result += self.create_steps_description() + "\n"
-        if prev_section is None or prev_section.r_side_description != self.r_side_description:
+        if self.r_side_description != "" and (
+                prev_section is None or prev_section.r_side_description != self.r_side_description):
             result += self.create_r_side_description() + "\n"
-        if prev_section is None or prev_section.l_side_description != self.l_side_description:
+        if self.l_side_description != "" and (
+                prev_section is None or prev_section.l_side_description != self.l_side_description):
             result += self.create_l_side_description() + "\n"
         if prev_section is None or prev_section.length != self.length:
             result += self.create_length_description() + "\n"
