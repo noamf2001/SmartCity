@@ -6,26 +6,32 @@ R = 6373.0
 
 
 class Point:
-    def __init__(self, id, x, y):
+    def __init__(self, id, lat, lon):
         self.id = id
-        self.lat = x
-        self.lan = y
+        self.lat = lat
+        self.lon = lon
 
-    def get_angle(self):
-
-
-        return np.angle(self.lat + self.lan * 1j, deg=True)
+    def get_angle(self, other_point):
+        dlon = self.lon - other_point.lon
+        y = math.sin(dlon) * math.cos(other_point.lat)
+        x = math.cos(self.lat) * math.sin(other_point.lat2) - math.sin(self.lat) * math.cos(other_point.lat) * math.cos(
+            dlon)
+        brng = math.atan2(y, x)
+        brng = math.degrees(brng)
+        brng = (brng + 360) % 360
+        brng = 360 - brng  # count degrees counter - clockwise - remove to make clockwise
+        return brng
 
     @staticmethod
     def sub_points(point1, point2):
-        return Point(0, point2.lat - point1.lat, point2.lan - point1.lan)
+        return Point(0, point2.lat - point1.lat, point2.lon - point1.lon)
 
     @staticmethod
     def calc_distance(point1, point2):
         lat1 = math.radians(point1.lat)
-        lon1 = math.radians(point1.lan)
+        lon1 = math.radians(point1.lon)
         lat2 = math.radians(point2.lat)
-        lon2 = math.radians(point2.lan)
+        lon2 = math.radians(point2.lon)
 
         dlon = lon2 - lon1
 
@@ -43,13 +49,10 @@ class Point:
         return new_points_list
 
 
-
-
-
 class Section:
     def __init__(self, start_point: Point, end_point: Point, ground_type: str, slope: int, is_steps: bool,
                  r_side_description: str, l_side_description: str, length: int,
-                 steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", block:str = "",comments: str = ""):
+                 steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", block: str = "", comments: str = ""):
         """
         :param rail: out of (N - no rail, "left","right")
         :param stairs_slope: out of ("N" - no stairs,"up","down")
@@ -66,15 +69,12 @@ class Section:
         self.steps_num = steps_num  # 8
         self.rail = rail  # 9
         self.stairs_slope = stairs_slope  # 10
-        self.block = block # 11
+        self.block = block  # 11
         self.comments = comments  # 12
 
         self.angle = Point.sub_points(end_point, start_point).get_angle()
 
-
     def create_turn_description(self, prev_angle) -> str:
-
-
 
         turn_angle = self.angle - prev_angle
         if turn_angle > 180:
@@ -117,7 +117,7 @@ class Section:
     def create_comments_description(self) -> str:
         return "here is some information about your road" + self.comments
 
-    def create_description(self, prev_section=None):
+    def get_section_description(self, prev_section=None):
         result = ""
         if prev_section is not None and self.angle != prev_section.angle:
             result += self.create_turn_description(prev_section.current_incline) + "\n"
