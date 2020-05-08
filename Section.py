@@ -44,7 +44,7 @@ class Point:
 class Section:
     def __init__(self, start_point: Point, end_point: Point, ground_type: str, slope: int, is_steps: bool,
                  r_side_description: str, l_side_description: str, length: int,
-                 steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", comments: str = ""):
+                 steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", block:str = "",comments: str = ""):
         """
         :param rail: out of (N - no rail, "left","right")
         :param stairs_slope: out of ("N" - no stairs,"up","down")
@@ -61,7 +61,8 @@ class Section:
         self.steps_num = steps_num  # 8
         self.rail = rail  # 9
         self.stairs_slope = stairs_slope  # 10
-        self.comments = comments  # 11
+        self.block = block # 11
+        self.comments = comments  # 12
 
         self.angle = Point.sub_points(end_point, start_point).get_angle()
 
@@ -101,6 +102,9 @@ class Section:
     def create_length_description(self) -> str:
         return "the length of the road is" + str(self.length)
 
+    def create_block_description(self) -> str:
+        return "there is a blocking object ahead: " + self.block
+
     def create_comments_description(self) -> str:
         return "here is some information about your road" + self.comments
 
@@ -120,6 +124,8 @@ class Section:
         if prev_section is not None and prev_section.l_side_description != self.l_side_description:
             result += self.create_l_side_description() + "\n"
         if prev_section is not None and prev_section.length != self.length:
+            result += self.create_length_description() + "\n"
+        if prev_section is not None and prev_section.block != self.block and self.block != "":
             result += self.create_length_description() + "\n"
         if self.comments != "" and prev_section is not None and prev_section.comments != self.comments:
             result += self.create_comments_description() + "\n"

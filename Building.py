@@ -82,7 +82,7 @@ def split_to_sections(points_list, nodes_info) -> list:
 
 def create_description(points_list) -> str:
     """
-    :param points_list: [[x,y,id] for every turn]
+    :param points_list: [[lan,lat,id] for every turn]
     :return:
     """
     result = ""
