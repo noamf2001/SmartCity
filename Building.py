@@ -83,7 +83,7 @@ def split_to_sections(points_list, nodes_info) -> list:
 def create_description(points_list) -> str:
     """
     :param points_list: [[lat,lon,id] for every turn]
-    :return:
+    :return: the text
     """
     result = ""
     points_list = Point.create_points_list(points_list)
