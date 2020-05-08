@@ -43,7 +43,7 @@ class Point:
 
 class Section:
     def __init__(self, start_point: Point, end_point: Point, ground_type: str, slope: int, is_steps: bool,
-                 r_side_description: str, l_side_description: str, length: int, width: int,
+                 r_side_description: str, l_side_description: str, length: int,
                  steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", comments: str = ""):
         """
         :param rail: out of (N - no rail, "left","right")

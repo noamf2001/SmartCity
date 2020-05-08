@@ -80,7 +80,7 @@ def writeNodesToFile(nodes, name, sheet, book):
     book.save(name)
 
 
-def create_nodes_info(path:str):
+def create_nodes_info(path: str):
     entities = osmToEntities(path)
     nodes = createNodes(entities)
     ways = createWays(entities)
