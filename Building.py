@@ -101,9 +101,14 @@ def create_description(points_list) -> str:
     points_list = Point.create_points_list(points_list)
     nodes_info = create_nodes_info(PATH)
     section_list = split_to_sections(points_list, nodes_info)
+    print(len(section_list))
     result += section_list[0].get_section_description(None)
-    for section_index in range(1, len(section_list) - 1):
+    for section_index in range(1, len(section_list)):
         result += section_list[section_index].get_section_description(section_list[section_index - 1])
+
     return result
+
+
+
 
 print(create_description(main_gate_to_stairs))

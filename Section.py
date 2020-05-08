@@ -14,12 +14,10 @@ class Point:
     def get_angle(self, other_point):
         dlon = self.lon - other_point.lon
         y = math.sin(dlon) * math.cos(other_point.lat)
-        x = math.cos(self.lat) * math.sin(other_point.lat2) - math.sin(self.lat) * math.cos(other_point.lat) * math.cos(
-            dlon)
+        x = math.cos(self.lat) * math.sin(other_point.lat) - math.sin(self.lat) * math.cos(other_point.lat) * math.cos(dlon)
         brng = math.atan2(y, x)
         brng = math.degrees(brng)
         brng = (brng + 360) % 360
-        brng = 360 - brng  # count degrees counter - clockwise - remove to make clockwise
         return brng
 
     @staticmethod
@@ -28,6 +26,7 @@ class Point:
 
     @staticmethod
     def calc_distance(point1, point2):
+
         lat1 = math.radians(point1.lat)
         lon1 = math.radians(point1.lon)
         lat2 = math.radians(point2.lat)
@@ -58,6 +57,7 @@ class Section:
         :param stairs_slope: out of ("N" - no stairs,"up","down")
         :param comments: no stairs comments
         """
+
         self.start_point = start_point  # 0
         self.end_point = end_point  # 1
         self.ground_type = ground_type  # 2
@@ -72,7 +72,8 @@ class Section:
         self.block = block  # 11
         self.comments = comments  # 12
 
-        self.angle = Point.sub_points(end_point, start_point).get_angle()
+        self.angle = start_point.get_angle(end_point)
+
 
     def create_turn_description(self, prev_angle) -> str:
 
@@ -120,22 +121,21 @@ class Section:
     def get_section_description(self, prev_section=None):
         result = ""
         if prev_section is not None and self.angle != prev_section.angle:
-            result += self.create_turn_description(prev_section.current_incline) + "\n"
-
-        if prev_section is not None and prev_section.ground_type != self.ground_type:
+            result += self.create_turn_description(prev_section.angle) + "\n"
+        if prev_section is None or prev_section.ground_type != self.ground_type:
             result += self.create_ground_type_description() + "\n"
-        if self.slope != 0 and prev_section is not None and prev_section.slope != self.slope:
+        if self.slope != 0 and (prev_section is None or prev_section.slope != self.slope):
             result += self.create_slope_description() + "\n"
         if self.is_steps:
             result += self.create_steps_description() + "\n"
-        if prev_section is not None and prev_section.r_side_description != self.r_side_description:
+        if prev_section is None or prev_section.r_side_description != self.r_side_description:
             result += self.create_r_side_description() + "\n"
-        if prev_section is not None and prev_section.l_side_description != self.l_side_description:
+        if prev_section is None or prev_section.l_side_description != self.l_side_description:
             result += self.create_l_side_description() + "\n"
-        if prev_section is not None and prev_section.length != self.length:
+        if prev_section is None or prev_section.length != self.length:
             result += self.create_length_description() + "\n"
-        if prev_section is not None and prev_section.block != self.block and self.block != "":
+        if self.block != "" and (prev_section is None or prev_section.block != self.block):
             result += self.create_length_description() + "\n"
-        if self.comments != "" and prev_section is not None and prev_section.comments != self.comments:
+        if self.comments != "" and (prev_section is None or prev_section.comments != self.comments):
             result += self.create_comments_description() + "\n"
         return result
