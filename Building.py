@@ -2,6 +2,7 @@ from ExampleInput import main_gate_to_stairs
 from Section import Section
 from OSMParser import create_nodes_info
 from Section import Point
+from TwoPoints import get_points_between_two_points
 
 PATH = "map.osm"
 
@@ -61,7 +62,7 @@ def allNodes(points_list):
     return allPoints                        
     
 
-def split_to_sections(allNodes(points_list), nodes_info) -> list:
+def split_to_sections(points_list, nodes_info) -> list:
     """
 
     :param points_list: list of points of type Point (from Section)
