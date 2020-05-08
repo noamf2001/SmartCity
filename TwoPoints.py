@@ -31,7 +31,7 @@ def get_interesting_points(lat, lon, meters):
 
 
 def get_points_between_two_points(point1, point2):
-    (lat1, lon1), (lat2, lon2) = (point1.x, point1.y), (point2.x, point2.y)
+    (lat1, lon1), (lat2, lon2) = (point1.lat, point1.lan), (point2.lat, point2.lan)
     url = "http://api.openstreetmap.org/api/0.6/map?bbox=%s,%s,%s,%s" % (lon1, lat1, lon2, lat2)
     osm_text = urllib.request.urlopen(url).read()
     soup = bs4.BeautifulSoup(osm_text)

@@ -8,22 +8,24 @@ R = 6373.0
 class Point:
     def __init__(self, id, x, y):
         self.id = id
-        self.x = x
-        self.y = y
+        self.lat = x
+        self.lan = y
 
     def get_angle(self):
-        return np.angle(self.x + self.y * 1j, deg=True)
+
+
+        return np.angle(self.lat + self.lan * 1j, deg=True)
 
     @staticmethod
     def sub_points(point1, point2):
-        return Point(0, point2.x - point1.x, point2.y - point1.y)
+        return Point(0, point2.lat - point1.lat, point2.lan - point1.lan)
 
     @staticmethod
     def calc_distance(point1, point2):
-        lat1 = math.radians(point1.x)
-        lon1 = math.radians(point1.y)
-        lat2 = math.radians(point2.x)
-        lon2 = math.radians(point2.y)
+        lat1 = math.radians(point1.lat)
+        lon1 = math.radians(point1.lan)
+        lat2 = math.radians(point2.lat)
+        lon2 = math.radians(point2.lan)
 
         dlon = lon2 - lon1
 
@@ -39,6 +41,9 @@ class Point:
         for point in points_list:
             new_points_list.append(Point(point[2], point[0], point[1]))
         return new_points_list
+
+
+
 
 
 class Section:
@@ -66,7 +71,11 @@ class Section:
 
         self.angle = Point.sub_points(end_point, start_point).get_angle()
 
+
     def create_turn_description(self, prev_angle) -> str:
+
+
+
         turn_angle = self.angle - prev_angle
         if turn_angle > 180:
             turn_angle = 360 - turn_angle
