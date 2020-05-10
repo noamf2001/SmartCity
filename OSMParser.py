@@ -33,7 +33,7 @@ def createOutputList(nodes, ways):
 
     for i, item in enumerate(nodes):
         node_tags = {}
-        start_point = Point(item.id, item.lon, item.lat)
+        start_point = Point(item.lat,item.lon,item.id)
         node_tags["start_point"] = start_point
 
         if "highway" in item.tags:

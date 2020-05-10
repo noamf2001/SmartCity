@@ -6,7 +6,7 @@ R = 6373.0
 
 
 class Point:
-    def __init__(self, id, lat, lon):
+    def __init__(self, lat, lon,id):
         self.id = id
         self.lat = lat
         self.lon = lon
@@ -23,7 +23,7 @@ class Point:
 
     @staticmethod
     def sub_points(point1, point2):
-        return Point(0, point2.lat - point1.lat, point2.lon - point1.lon)
+        return Point(point2.lat - point1.lat, point2.lon - point1.lon,0)
 
     @staticmethod
     def calc_distance(point1, point2):
@@ -44,7 +44,7 @@ class Point:
     def create_points_list(points_list):
         new_points_list = []
         for point in points_list:
-            new_points_list.append(Point(point[2], point[0], point[1]))
+            new_points_list.append(Point(point[0], point[1],point[2]))
         return new_points_list
 
 
