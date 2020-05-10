@@ -49,7 +49,9 @@ def createOutputList(nodes, ways):
                 if "highway" in way.tags:
                     node_tags["ground_type"] = way.tags["highway"]
                     if way.tags["highway"] == "steps":
-                        node_tags["is_steps"] = "Yes"
+                        node_tags["is_steps"] = True
+                    else:
+                        node_tags["is_steps"] = False
 
                 # write way handrail
                 if "handrail" in way.tags:

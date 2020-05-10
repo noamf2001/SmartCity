@@ -95,7 +95,7 @@ class Section:
         return "the ground type is " + str(self.ground_type)
 
     def create_slope_description(self) -> str:
-        return "there is a slope, and the angle is" + str(self.slope)
+        return "there is a slope, and the angle is " + str(self.slope)
 
     def create_steps_description(self) -> str:
         result = "go" + self.stairs_slope + " " + str(self.steps_num) + "stairs"
@@ -104,19 +104,19 @@ class Section:
         return result
 
     def create_r_side_description(self) -> str:
-        return "in your right side you can find" + self.r_side_description
+        return "in your right side you can find " + self.r_side_description
 
     def create_l_side_description(self) -> str:
-        return "in your left side you can find" + self.l_side_description
+        return "in your left side you can find " + self.l_side_description
 
     def create_length_description(self) -> str:
-        return "the length of the road is" + str(self.length)
+        return "the length of the road is " + str(self.length)
 
     def create_block_description(self) -> str:
         return "there is a blocking object ahead: " + self.block
 
     def create_comments_description(self) -> str:
-        return "here is some information about your road" + self.comments
+        return "here is some information about your road " + self.comments
 
     def get_section_description(self, prev_section=None):
         result = ""

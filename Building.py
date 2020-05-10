@@ -1,4 +1,4 @@
-from ExampleInput import main_gate_to_stairs
+from ExampleInput import main_gate_to_stairs, with_turn, with_incline
 from Section import Section
 from OSMParser import create_nodes_info
 from Section import Point
@@ -37,20 +37,16 @@ def get_slope():
     return 0
 
 
-def calc_distance(point1, point2):
-    '''return distance'''
-
-
 def create_section_from_info(info):
-    section = Section(Point(0, 0, 0), Point(0, 0, 0), "", 0, False, "", "", 0, 0, "", "")
+    section = Section(Point(0, 0, 0), Point(0, 0, 0), False, 0)
     if (info):
-        section = Section(info["start_point"], get_end_point(), info["ground_type"], get_slope(), False, "get_right_desc(info)",
-                     "get_left_desc(info)", 0, 0, "0", "block")
+        section = Section(info["start_point"], get_end_point(), info["is_steps"], 0, info["ground_type"])
     return section
 
 
 def diff(section1, section2):
     return (section1.ground_type != section2.ground_type) or (section1.is_steps != section2.is_steps)
+
 
 def allNodes(points_list):
     allPoints = []
@@ -86,7 +82,7 @@ def split_to_sections(points_list, nodes_info) -> list:
     for section in sections[1:]:
         end_sec = section
         start_sec.end_point = end_sec.start_point
-        start_sec.length = calc_distance(start_sec.start_point, start_sec.end_point)
+        start_sec.length = Point.calc_distance(start_sec.start_point, start_sec.end_point)
         start_sec = end_sec
 
     return sections
@@ -100,14 +96,12 @@ def create_description(points_list) -> str:
     result = ""
     points_list = Point.create_points_list(points_list)
     nodes_info = create_nodes_info(PATH)
-    section_list = split_to_sections(points_list, nodes_info)
+    section_list = split_to_sections(allNodes(points_list), nodes_info)
     result += section_list[0].get_section_description(None)
     for section_index in range(1, len(section_list)):
         result += section_list[section_index].get_section_description(section_list[section_index - 1])
 
     return result
-
-
 
 
 print(create_description(main_gate_to_stairs))
