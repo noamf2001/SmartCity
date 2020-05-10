@@ -51,12 +51,13 @@ def diff(section1, section2):
 def allNodes(points_list):
     allPoints = []
     l = len(points_list)
-    for i in range (0, l-1):
-        allPoints.extend(get_points_between_two_points(points_list[i], points_list[i+1]))
+    for i in range(0, l - 1):
+        allPoints.extend(get_points_between_two_points(points_list[i], points_list[i + 1]))
+        print(len(allPoints))
         del allPoints[-1]
-        
-    return allPoints                        
-    
+
+    return allPoints
+
 
 def split_to_sections(points_list, nodes_info) -> list:
     """
