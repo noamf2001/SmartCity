@@ -4,7 +4,7 @@ from OSMParser import create_nodes_info
 from Section import Point
 from TwoPoints import get_points_between_two_points
 
-PATH = "map.osm"
+PATH = "map (5).osm"
 
 
 def fetch_point_info(point, nodes_info):
@@ -38,9 +38,7 @@ def get_slope():
 
 
 def create_section_from_info(info):
-    section = Section(Point(0, 0, 0), Point(0, 0, 0), False, 0)
-    if (info):
-        section = Section(info["start_point"], get_end_point(), info["is_steps"], 0, info["ground_type"])
+    section = Section(info["start_point"], get_end_point(), info["is_steps"], 0, info["ground_type"])
     return section
 
 
@@ -53,6 +51,7 @@ def allNodes(points_list):
     l = len(points_list)
     for i in range(0, l - 1):
         allPoints.extend(get_points_between_two_points(points_list[i], points_list[i + 1]))
+        print(get_points_between_two_points(points_list[i], points_list[i + 1]))
         print(len(allPoints))
         del allPoints[-1]
 
@@ -74,10 +73,12 @@ def split_to_sections(points_list, nodes_info) -> list:
     sections.append(sec)
 
     for point in points_list[1:]:
-        next_sec = create_section_from_info(fetch_point_info(point, nodes_info))
-        if diff(sec, next_sec):
-            sections.append(next_sec)
-        sec = next_sec
+        info = fetch_point_info(point, nodes_info)
+        if info:
+            next_sec = create_section_from_info(info)
+            if diff(sec, next_sec):
+                sections.append(next_sec)
+            sec = next_sec
 
     start_sec = sections[0]
     for section in sections[1:]:
@@ -97,7 +98,7 @@ def create_description(points_list) -> str:
     result = ""
     points_list = Point.create_points_list(points_list)
     nodes_info = create_nodes_info(PATH)
-    section_list = split_to_sections(allNodes(points_list), nodes_info)
+    section_list = split_to_sections(points_list, nodes_info)
     result += section_list[0].get_section_description(None)
     for section_index in range(1, len(section_list)):
         result += section_list[section_index].get_section_description(section_list[section_index - 1])
