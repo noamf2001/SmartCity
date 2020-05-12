@@ -5,7 +5,7 @@ from OSMParser import create_nodes_info
 from Section import Point
 from TwoPoints import get_points_between_two_points
 
-PATH = "map (5).osm"
+PATH = "map2.osm"
 
 
 def fetch_point_info(point, nodes_info):
