@@ -98,9 +98,9 @@ class Section:
         return "there is a slope, and the angle is " + str(self.slope)
 
     def create_steps_description(self) -> str:
-        result = "go" + self.stairs_slope + " " + str(self.steps_num) + "stairs"
+        result = "go " + self.stairs_slope + " " + str(self.steps_num) + " stairs"
         if self.rail != "N":
-            result += "use the rail on the " + self.rail
+            result += ", use the rail on the " + self.rail
         return result
 
     def create_r_side_description(self) -> str:

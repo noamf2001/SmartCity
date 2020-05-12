@@ -1,3 +1,4 @@
+import OSMParser
 from ExampleInput import main_gate_to_stairs, with_turn, with_incline
 from Section import Section
 from OSMParser import create_nodes_info
@@ -8,9 +9,15 @@ PATH = "map (5).osm"
 
 
 def fetch_point_info(point, nodes_info):
+    info = None
     for item in nodes_info:
+        # if node is in nodes
         if item["start_point"].id == point.id:
-            return item
+            info = item
+            if info["start_point"].lon == 0 and info["start_point"].lat == 0:
+                info["start_point"].lon = point.lon
+                info["start_point"].lat = point.lat
+            return info
 
 
 def get_right_desc(point):
@@ -39,6 +46,10 @@ def get_slope():
 
 def create_section_from_info(info):
     section = Section(info["start_point"], get_end_point(), info["is_steps"], 0, info["ground_type"])
+    if "steps_num" in info.keys():
+        section.steps_num = info["steps_num"]
+    if "rail" in info.keys():
+        section.rail = info["rail"]
     return section
 
 

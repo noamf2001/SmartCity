@@ -42,6 +42,9 @@ def createOutputList(nodes, ways):
         if "amenity" in item.tags:
             node_tags["r_side_description"] = item.tags["amenity"]
 
+        if "barrier" in item.tags:
+            node_tags["barrier"] = item.tags["barrier"]
+
         for way in ways:
             if item.id in way.nodes:
 
@@ -70,6 +73,46 @@ def createOutputList(nodes, ways):
                     node_tags["l_side_description"] = way.tags["name:en"]
 
         output.append(node_tags)
+
+    for way in ways:
+        node_ids = way.nodes
+        for id in node_ids:
+            node_tags = {}
+            id_in_nodes = False
+            for node in nodes:
+                if (node.id == id) and node.tags:
+                    id_in_nodes = True
+            if not id_in_nodes:
+                start_point = Point(0, 0, id)  # ???
+                node_tags["start_point"] = start_point
+
+                if "highway" in way.tags:
+                    node_tags["ground_type"] = way.tags["highway"]
+                    if way.tags["highway"] == "steps":
+                        node_tags["is_steps"] = True
+                    else:
+                        node_tags["is_steps"] = False
+
+                # write way handrail
+                if "handrail" in way.tags:
+                    node_tags["rail"] = way.tags["handrail"]
+
+                # write way step-count
+                if "step_count" in way.tags:
+                    node_tags["steps_num"] = way.tags["step_count"]
+
+                # write way barrier
+                if "barrier" in way.tags:
+                    node_tags["barrier"] = way.tags["barrier"]
+
+                # write way name
+                if "name:en" in way.tags:
+                    node_tags["l_side_description"] = way.tags["name:en"]
+
+                if "amenity" in way.tags:
+                    node_tags["r_side_description"] = way.tags["amenity"]
+            if node_tags:
+                output.append(node_tags)
     return output
 
 
