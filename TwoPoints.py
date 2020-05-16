@@ -73,6 +73,6 @@ def get_closest_node(point1):
     return max_node
 
 
-points = Section.Point.create_points_list([[32.113254, 34.802280,7404723491]])
-print(get_closest_node(points[0]))
+#points = Section.Point.create_points_list([[32.113254, 34.802280,7404723491]])
+#print(get_closest_node(points[0]))
 # print(get_interesting_points(32.112123, 34.803953,20))
