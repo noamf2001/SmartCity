@@ -56,8 +56,16 @@ def create_section_from_info(info):
 def diff(section1, section2):
     return (section1.ground_type != section2.ground_type) or (section1.is_steps != section2.is_steps)
 
+def create_points_list(points_list):
+    new_points_list = []
+    for point in points_list:
+        point2 = get_closest_node(point)
+        new_points_list.append(Point(point[0], point[1], point2))
 
-def allNodes(points_list):
+    return new_points_list
+
+
+def allNodes(create_points_list(points_list)):
     allPoints = []
     l = len(points_list)
     for i in range(0, l - 1):
