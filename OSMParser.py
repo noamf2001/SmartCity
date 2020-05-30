@@ -131,3 +131,7 @@ def create_nodes_info(path: str):
     ways = createWays(entities)
     nodes_info = createOutputList(nodes, ways)
     return nodes_info
+
+if __name__ == '__main__':
+    nodes_info = create_nodes_info("map2.osm")
+    print(len(nodes_info))

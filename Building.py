@@ -1,11 +1,11 @@
 import OSMParser
-from ExampleInput import main_gate_to_stairs, with_turn, with_incline
 from Section import Section
 from OSMParser import create_nodes_info
 from Section import Point
 from TwoPoints import get_points_between_two_points
-from ExampleInput import main_gate_to_stairs_points
+from ExampleInput import entrance_to_exact_science
 from TwoPoints import get_closest_node
+
 PATH = "map2.osm"
 
 
@@ -56,6 +56,7 @@ def create_section_from_info(info):
 
 def diff(section1, section2):
     return (section1.ground_type != section2.ground_type) or (section1.is_steps != section2.is_steps)
+
 
 def create_points_list(points_list):
     new_points_list = []
@@ -128,4 +129,4 @@ def create_description(points_list) -> str:
 
 
 if __name__ == '__main__':
-    print(create_description(main_gate_to_stairs))
+    print(create_description(entrance_to_exact_science))
