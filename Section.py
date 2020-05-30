@@ -6,10 +6,10 @@ R = 6373.0
 
 
 class Point:
-    def __init__(self, lat, lon,id):
-        self.id = id
+    def __init__(self, lat, lon, id):
         self.lat = lat
         self.lon = lon
+        self.id = id
 
     def get_angle(self, other_point):
         dlon = self.lon - other_point.lon
@@ -23,10 +23,15 @@ class Point:
 
     @staticmethod
     def sub_points(point1, point2):
-        return Point(point2.lat - point1.lat, point2.lon - point1.lon,0)
+        return Point(point2.lat - point1.lat, point2.lon - point1.lon, 0)
 
     @staticmethod
     def calc_distance(point1, point2):
+        print("start calc diss")
+        print(point1.lat)
+        print(point1.lon)
+        print(point2.lat)
+        print(point2.lon)
         lat1 = math.radians(point1.lat)
         lon1 = math.radians(point1.lon)
         lat2 = math.radians(point2.lat)
@@ -38,13 +43,16 @@ class Point:
         a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         distance = R * c
+
+        distance = distance // 1000  # to meter
+
         return distance
 
     @staticmethod
     def create_points_list(points_list):
         new_points_list = []
         for point in points_list:
-            new_points_list.append(Point(point[0], point[1],point[2]))
+            new_points_list.append(Point(point[0], point[1], point[2]))
         return new_points_list
 
 
@@ -89,7 +97,10 @@ class Section:
         else:  # turn_angle < -180
             turn_angle += 360
             direction = "right"
-        return "turn " + str(turn_angle) + " degrees " + direction
+        turn_angle = turn_angle // 1
+        if turn_angle > 30:
+            return "turn " + str(turn_angle) + " degrees " + direction + "\n"   
+        return ""
 
     def create_ground_type_description(self) -> str:
         return "the ground type is " + str(self.ground_type)
@@ -121,7 +132,7 @@ class Section:
     def get_section_description(self, prev_section=None):
         result = ""
         if prev_section is not None and self.angle != prev_section.angle:
-            result += self.create_turn_description(prev_section.angle) + "\n"
+            result += self.create_turn_description(prev_section.angle)
         if self.ground_type != "" and (prev_section is None or prev_section.ground_type != self.ground_type):
             result += self.create_ground_type_description() + "\n"
         if self.slope != 0 and (prev_section is None or prev_section.slope != self.slope):

@@ -4,7 +4,8 @@ from Section import Section
 from OSMParser import create_nodes_info
 from Section import Point
 from TwoPoints import get_points_between_two_points
-
+from ExampleInput import main_gate_to_stairs_points
+from TwoPoints import get_closest_node
 PATH = "map2.osm"
 
 
@@ -65,7 +66,8 @@ def create_points_list(points_list):
     return new_points_list
 
 
-def allNodes(create_points_list(points_list)):
+def allNodes(points_list):
+    points_list = create_points_list(points_list)
     allPoints = []
     l = len(points_list)
     for i in range(0, l - 1):
@@ -125,4 +127,5 @@ def create_description(points_list) -> str:
     return result
 
 
-print(create_description(main_gate_to_stairs))
+if __name__ == '__main__':
+    print(create_description(main_gate_to_stairs))

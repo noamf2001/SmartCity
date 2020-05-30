@@ -1,6 +1,7 @@
 import urllib.request
 import bs4
 import time
+from Section import Point
 
 import math
 
@@ -77,3 +78,6 @@ def get_closest_node(point1):
 #points = Section.Point.create_points_list([[32.113254, 34.802280,7404723491]])
 #print(get_closest_node(points[0]))
 # print(get_interesting_points(32.112123, 34.803953,20))
+if __name__ == '__main__':
+    print(get_points_between_two_points(Point(32.1132673, 34.8023025, 7404723491),
+                                        Point(32.1132644, 34.8027496, 1145284788)))
