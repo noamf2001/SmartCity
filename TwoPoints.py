@@ -86,7 +86,7 @@ def get_points_between_two_points_second_version(point1, point2):
 
     soup = bs4.BeautifulSoup(osm_text, "lxml")
     nodes = soup.findAll("node")
-    print("len(nodes)",len(nodes))
+    #print("len(nodes)",len(nodes))
     points = []
     for node in nodes:  # 1184053312
         lat = float(node.get("lat"))
