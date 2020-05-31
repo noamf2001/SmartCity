@@ -11,6 +11,9 @@ class Point:
         self.lon = lon
         self.id = id
 
+    def to_string(self):
+        return "lat:" + str(self.lat) + "\t" + str(self.lon) + "\t" + str(self.id)
+
     def get_angle(self, other_point):
         dlon = self.lon - other_point.lon
         y = math.sin(dlon) * math.cos(other_point.lat)
@@ -27,11 +30,7 @@ class Point:
 
     @staticmethod
     def calc_distance(point1, point2):
-        print("start calc diss")
-        print(point1.lat)
-        print(point1.lon)
-        print(point2.lat)
-        print(point2.lon)
+        """
         lat1 = math.radians(point1.lat)
         lon1 = math.radians(point1.lon)
         lat2 = math.radians(point2.lat)
@@ -47,20 +46,20 @@ class Point:
         distance = distance // 1000  # to meter
 
         return distance
-
-    @staticmethod
-    def create_points_list(points_list):
-        new_points_list = []
-        for point in points_list:
-            new_points_list.append(Point(point[0], point[1], point[2]))
-        return new_points_list
+        """
+        p_lat = point1.lat
+        p_lon = point1.lon
+        n_lat = point2.lat
+        n_lon = point2.lon
+        return math.sqrt((p_lat - n_lat) ** 2 + (p_lon - n_lon) ** 2)
 
 
 class Section:
     def __init__(self, start_point: Point, end_point: Point, is_steps: bool, length: int, ground_type: str = "",
                  slope: int = 0,
                  r_side_description: str = "", l_side_description: str = "",
-                 steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", block: str = "", comments: str = ""):
+                 steps_num: int = 0, rail: str = "N", stairs_slope: str = "N", block: str = "", comments: str = "",
+                 name=""):
         """
         :param rail: out of (N - no rail, "left","right")
         :param stairs_slope: out of ("N" - no stairs,"up","down")
@@ -80,8 +79,14 @@ class Section:
         self.stairs_slope = stairs_slope  # 10
         self.block = block  # 11
         self.comments = comments  # 12
+        self.name = name  # 13
 
-        self.angle = start_point.get_angle(end_point)
+    @staticmethod
+    def check_if_dff(section1, section2):
+        types_diff = (section1.ground_type != section2.ground_type) or (section1.is_steps != section2.is_steps)
+        angle_diff = section1.start_point.get_angle(section1.end_point) != section2.start_point.get_angle(
+            section2.end_point)
+        return types_diff or angle_diff  # TODO
 
     def create_turn_description(self, prev_angle) -> str:
 
@@ -99,7 +104,7 @@ class Section:
             direction = "right"
         turn_angle = turn_angle // 1
         if turn_angle > 30:
-            return "turn " + str(turn_angle) + " degrees " + direction + "\n"   
+            return "turn " + str(turn_angle) + " degrees " + direction + "\n"
         return ""
 
     def create_ground_type_description(self) -> str:
@@ -127,12 +132,16 @@ class Section:
         return "there is a blocking object ahead: " + self.block
 
     def create_comments_description(self) -> str:
-        return "here is some information about your road " + self.comments
+        return "here is some extra information about your road " + self.comments
+
+    def create_name_description(self) -> str:
+        return "the name of the road is: " + self.name
 
     def get_section_description(self, prev_section=None):
         result = ""
-        if prev_section is not None and self.angle != prev_section.angle:
-            result += self.create_turn_description(prev_section.angle)
+        self.angle = self.start_point.get_angle(self.end_point)
+        # if prev_section is not None and self.angle != prev_section.angle:
+        #    result += self.create_turn_description(prev_section.angle)
         if self.ground_type != "" and (prev_section is None or prev_section.ground_type != self.ground_type):
             result += self.create_ground_type_description() + "\n"
         if self.slope != 0 and (prev_section is None or prev_section.slope != self.slope):
@@ -151,4 +160,6 @@ class Section:
             result += self.create_length_description() + "\n"
         if self.comments != "" and (prev_section is None or prev_section.comments != self.comments):
             result += self.create_comments_description() + "\n"
+        if self.name != "" and (prev_section is None or prev_section.name != self.name):
+            result += self.create_name_description() + "\n"
         return result

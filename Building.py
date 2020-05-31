@@ -2,11 +2,19 @@ import OSMParser
 from Section import Section
 from OSMParser import create_nodes_info
 from Section import Point
-from TwoPoints import get_points_between_two_points
-from ExampleInput import entrance_to_exact_science
+from TwoPoints import get_points_between_two_points, get_points_between_two_points_second_version
+from ExampleInput import *
 from TwoPoints import get_closest_node
 
 PATH = "map2.osm"
+
+
+def get_empty_node_info(point):
+    result = {}
+    result["start_point"] = point
+    result["is_steps"] = False
+    result["ground_type"] = "UnKnown"
+    return result
 
 
 def fetch_point_info(point, nodes_info):
@@ -19,6 +27,7 @@ def fetch_point_info(point, nodes_info):
                 info["start_point"].lon = point.lon
                 info["start_point"].lat = point.lat
             return info
+    return get_empty_node_info(point)
 
 
 def get_right_desc(point):
@@ -54,30 +63,48 @@ def create_section_from_info(info):
     return section
 
 
-def diff(section1, section2):
-    return (section1.ground_type != section2.ground_type) or (section1.is_steps != section2.is_steps)
-
-
 def create_points_list(points_list):
+    """
+
+    :param points_list: len >= 1
+    :return:
+    """
     new_points_list = []
-    for point in points_list:
-        point2 = get_closest_node(point)
-        new_points_list.append(Point(point[0], point[1], point2))
+
+    for point_index in range(0, len(points_list)):
+        # closest_point = get_closest_node(points_list[point_index])
+        new_points_list.append(Point(points_list[point_index][1], points_list[point_index][0], -1))
 
     return new_points_list
 
 
-def allNodes(points_list):
+def get_all_nodes_in_route(points_list):
     points_list = create_points_list(points_list)
     allPoints = []
-    l = len(points_list)
-    for i in range(0, l - 1):
-        allPoints.extend(get_points_between_two_points(points_list[i], points_list[i + 1]))
-        print(get_points_between_two_points(points_list[i], points_list[i + 1]))
+    points_id_set = set()  # TODO - i did not understand why we need the del, because its wrong (for example if
+    # TODO - len(points_to_add_list) = 0), so i did something else that is 100% correct but longer, can rewrite if you want and
+    # TODO - sure it will work
+    for i in range(0, len(points_list) - 1):
+        points_to_add_list = get_points_between_two_points(points_list[i], points_list[i + 1])
+        for point_to_add in points_to_add_list:
+            if point_to_add.id not in points_id_set:
+                points_id_set.add(point_to_add.id)
+            else:
+                points_to_add_list.remove(point_to_add)
+        allPoints.extend(points_to_add_list)
         print(len(allPoints))
-        del allPoints[-1]
-
     return allPoints
+
+
+def get_all_nodes_in_route_simple(points_list):
+    points_list = create_points_list(points_list)
+    print("start points_list len", len(points_list))
+    for i in range(0, len(points_list) - 2):
+        points_to_add_list = get_points_between_two_points_second_version(points_list[i], points_list[i + 1])
+        # print(i, " to ", i+1, " add: ", len(points_to_add_list))
+        points_list.extend(points_to_add_list)
+    print("end points_list len", len(points_list))
+    return points_list
 
 
 def split_to_sections(points_list, nodes_info) -> list:
@@ -98,7 +125,7 @@ def split_to_sections(points_list, nodes_info) -> list:
         info = fetch_point_info(point, nodes_info)
         if info:
             next_sec = create_section_from_info(info)
-            if diff(sec, next_sec):
+            if Section.check_if_dff(sec, next_sec):
                 sections.append(next_sec)
             sec = next_sec
 
@@ -112,14 +139,17 @@ def split_to_sections(points_list, nodes_info) -> list:
     return sections
 
 
-def create_description(points_list) -> str:
+def create_description(raw_points_list) -> str:
     """
-    :param points_list: [[lat,lon,id] for every turn]
+    :param points_list: [[lon,lat]] for every turn]
     :return: the text
     """
+    if len(raw_points_list) == 0:
+        return ""
     result = ""
-    points_list = Point.create_points_list(points_list)
+    points_list = get_all_nodes_in_route_simple(raw_points_list)
     nodes_info = create_nodes_info(PATH)
+
     section_list = split_to_sections(points_list, nodes_info)
     result += section_list[0].get_section_description(None)
     for section_index in range(1, len(section_list)):
@@ -129,4 +159,4 @@ def create_description(points_list) -> str:
 
 
 if __name__ == '__main__':
-    print(create_description(entrance_to_exact_science))
+    print(create_description(entrance_to_gilman))

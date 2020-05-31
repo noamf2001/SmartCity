@@ -39,8 +39,9 @@ def createOutputList(nodes, ways):
         if "highway" in item.tags:
             node_tags["comments"] = item.tags["highway"]
 
-        if "amenity" in item.tags:
-            node_tags["r_side_description"] = item.tags["amenity"]
+        # TODO
+        #if "amenity" in item.tags:
+        #    node_tags["r_side_description"] = item.tags["amenity"]
 
         if "barrier" in item.tags:
             node_tags["barrier"] = item.tags["barrier"]
@@ -70,7 +71,7 @@ def createOutputList(nodes, ways):
 
                 # write way name
                 if "name:en" in way.tags:
-                    node_tags["l_side_description"] = way.tags["name:en"]
+                    node_tags["name"] = way.tags["name:en"]
 
         output.append(node_tags)
 
@@ -106,11 +107,12 @@ def createOutputList(nodes, ways):
                     node_tags["barrier"] = way.tags["barrier"]
 
                 # write way name
-                if "name:en" in way.tags:
-                    node_tags["l_side_description"] = way.tags["name:en"]
 
-                if "amenity" in way.tags:
-                    node_tags["r_side_description"] = way.tags["amenity"]
+                if "name:en" in way.tags:
+                    node_tags["name"] = way.tags["name:en"]
+                # TODO
+                #if "amenity" in way.tags:
+                #    node_tags["r_side_description"] = way.tags["amenity"]
             if node_tags:
                 output.append(node_tags)
     return output
